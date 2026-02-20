@@ -1,52 +1,26 @@
-import { supabaseAdmin } from "@/lib/db/supabase-server";
-import { User } from "@/types/user";
+// subscription-service.ts
+// This module contains logic for managing subscriptions.
 
-export interface SubscriptionValidationResult {
-  valid: boolean;
-  level: string | null;
-  reason?: string;
+// Function to create a new subscription
+function createSubscription(userId: string, planId: string) {
+    // Logic to create a subscription for the user
+    // Placeholder for actual implementation
+    console.log(`Creating subscription for user: ${userId} with plan: ${planId}`);
 }
 
-export async function validateSubscription(
-  userId: string
-): Promise<SubscriptionValidationResult> {
-  const { data, error } = await supabaseAdmin
-    .from("users")
-    .select("*")
-    .eq("id", userId);
-
-  if (error) {
-    console.error("Subscription query error:", error);
-    return { valid: false, level: null, reason: "Database error" };
-  }
-
-  if (!data || data.length === 0) {
-    console.error("User not found in public.users:", userId);
-    return { valid: false, level: null, reason: "User not found" };
-  }
-
-  const user = data[0] as User;
-
-  if (!user.subscription_level) {
-    return { valid: false, level: null, reason: "No subscription" };
-  }
-
-  // Trial expiration
-  if (user.subscription_level === "trial") {
-    if (!user.trial_ends_at) {
-      return { valid: false, level: "trial", reason: "Trial data missing" };
-    }
-
-    const now = new Date();
-    const trialEnd = new Date(user.trial_ends_at);
-
-    if (now > trialEnd) {
-      return { valid: false, level: "trial", reason: "Trial expired" };
-    }
-  }
-
-  return {
-    valid: true,
-    level: user.subscription_level,
-  };
+// Function to cancel a subscription
+function cancelSubscription(subscriptionId: string) {
+    // Logic to cancel the subscription
+    // Placeholder for actual implementation
+    console.log(`Cancelling subscription: ${subscriptionId}`);
 }
+
+// Function to get subscription details
+function getSubscription(subscriptionId: string) {
+    // Logic to get subscription details
+    // Placeholder for actual implementation
+    console.log(`Getting details for subscription: ${subscriptionId}`);
+}
+
+// Export functions
+export { createSubscription, cancelSubscription, getSubscription };
