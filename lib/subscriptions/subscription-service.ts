@@ -1,26 +1,43 @@
 // subscription-service.ts
-// This module contains logic for managing subscriptions.
 
-// Function to create a new subscription
-function createSubscription(userId: string, planId: string) {
-    // Logic to create a subscription for the user
-    // Placeholder for actual implementation
-    console.log(`Creating subscription for user: ${userId} with plan: ${planId}`);
+class SubscriptionService {
+    private subscriptionsDB: { [userId: string]: Subscription } = {};
+
+    constructor() {}
+
+    getUserSubscription(userId: string): Subscription | null {
+        return this.subscriptionsDB[userId] || null;
+    }
+
+    createSubscription(userId: string, profileCount: number, pricePerProfile: number): Subscription {
+        const subscription: Subscription = {
+            userId,
+            profileCount,
+            status: 'active',
+            totalPrice: this.calculateSubscriptionPricing(profileCount, pricePerProfile)
+        };
+        this.subscriptionsDB[userId] = subscription;
+        return subscription;
+    }
+
+    updateSubscriptionStatus(userId: string, newStatus: string): Subscription | null {
+        const subscription = this.getUserSubscription(userId);
+        if (subscription) {
+            subscription.status = newStatus;
+        }
+        return subscription;
+    }
+
+    calculateSubscriptionPricing(profileCount: number, pricePerProfile: number): number {
+        return profileCount * pricePerProfile;
+    }
 }
 
-// Function to cancel a subscription
-function cancelSubscription(subscriptionId: string) {
-    // Logic to cancel the subscription
-    // Placeholder for actual implementation
-    console.log(`Cancelling subscription: ${subscriptionId}`);
+interface Subscription {
+    userId: string;
+    profileCount: number;
+    status: 'active' | 'inactive';
+    totalPrice: number;
 }
 
-// Function to get subscription details
-function getSubscription(subscriptionId: string) {
-    // Logic to get subscription details
-    // Placeholder for actual implementation
-    console.log(`Getting details for subscription: ${subscriptionId}`);
-}
-
-// Export functions
-export { createSubscription, cancelSubscription, getSubscription };
+export default SubscriptionService;
